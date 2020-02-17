@@ -1,28 +1,34 @@
 const chainMaker = {
-  chain: [],
+  currentChain: [],
   getLength() {
-    return this.chain.length;
+    return this.currentChain.length;
   },
   addLink(value) {
-    this.chain.push('( '+ value +' )');
+    this.currentChain.push(value === undefined ? '' : String(value));
     return this;
   },
   removeLink(position) {
-    if (position < 1 || position > this.chain.length || !Number.isInteger(position)) {
-      this.chain = [];
-      throw new Error;
+    try{
+      if (isNaN(position)
+        || position < 1 
+        || position > this.currentChain.length
+        || Math.round(position) != position) throw new Error();
+      this.currentChain.splice(position - 1, 1);
+      return this;
     }
-    this.chain.splice(position-1, 1);
-    return this;
+    catch(ex){
+      this.currentChain = [];
+      throw new Error();
+    }
   },
   reverseChain() {
-    this.chain.reverse();
+    this.currentChain.reverse();
     return this;
   },
   finishChain() {
-    let out = this.chain.join('~~');
-    this.chain = [];
-    return out;
+    let retValue = this.currentChain.map(x => '( ' + x + ' )').join('~~');
+    this.currentChain = [];
+    return retValue;
   }
 };
 
